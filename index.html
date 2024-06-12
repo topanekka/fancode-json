@@ -72,54 +72,11 @@
         .match a:hover {
             background-color: #0056b3;
         }
-
-        #input-form {
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 400px;
-            width: 100%;
-            margin: 20px;
-            text-align: center;
-        }
-
-        #input-form input[type="text"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
-
-        #input-form input[type="submit"] {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            font-size: 16px;
-        }
-
-        #input-form input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
     </style>
 </head>
 <body>
     <div id="matches-container">
         <!-- Match details will be dynamically added here -->
-    </div>
-
-    <div id="input-form">
-        <h2>Stream Your Own Link</h2>
-        <form id="stream-form">
-            <input type="text" id="stream-link" placeholder="Enter m3u8 link">
-            <input type="submit" value="Stream Now">
-        </form>
     </div>
 
     <script>
@@ -130,21 +87,6 @@
             // Redirect to the next page
             window.location.href = nextPageUrl;
         }
-
-        // Handle form submission
-        document.getElementById('stream-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            // Get the stream link from the input field
-            const streamLink = document.getElementById('stream-link').value.trim();
-
-            // Check if the input is not empty
-            if (streamLink) {
-                redirectToNextPage(streamLink); // Redirect to nextpage.html with the stream link
-            } else {
-                alert('Please enter a valid m3u8 link.'); // Show an alert if the input is empty
-            }
-        });
 
         // Fetch data from the API
         fetch('https://raw.githubusercontent.com/byte-capsule/FanCode-Hls-Fetcher/main/Fancode_hls_m3u8.Json')
