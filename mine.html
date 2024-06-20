@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minesweeper Game</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #1a237e; /* Navy Blue background */
+        color: #fff; /* White text color */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background-color: #3949ab; /* Darker shade of blue */
+        border: 2px solid #1a237e; /* Border color */
+        border-radius: 8px; /* Rounded corners */
+        margin-bottom: 20px;
+    }
+    .game-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 60px); /* 5 columns */
+        grid-template-rows: repeat(5, 60px); /* 5 rows */
+        grid-gap: 4px; /* Gap between cells */
+        background-color: #3949ab; /* Darker shade of blue */
+        border: 2px solid #1a237e; /* Border color */
+        padding: 10px; /* Padding */
+        border-radius: 8px; /* Rounded corners */
+    }
+    .cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        background-color: #7986cb; /* Lighter shade of blue */
+        border: 1px solid #3949ab; /* Border color */
+        transition: background-color 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    }
+    .cell:hover {
+        background-color: #5c6bc0; /* Darker hover color */
+    }
+    .bomb, .gem {
+        display: none;
+    }
+    .revealed {
+        background-color: #1e88e5; /* Blue accent color */
+        color: #fff;
+    }
+    .options-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .options {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+    }
+    .options label {
+        margin-right: 10px;
+    }
+    .restart-button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #e53935; /* Red color for button */
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    .restart-button:hover {
+        background-color: #c62828; /* Darker red on hover */
+    }
+</style>
+</head>
+<body>
+
+<div class="game-container">
+    <div class="game-grid">
+        <!-- Generating 25 cells (5x5 grid) -->
+        <!-- JavaScript will randomly assign bombs and gems -->
+        <!-- Each cell is initially marked as unclicked -->
+    </div>
+
+    <div class="options-container">
+        <div class="options">
+            <label for="bomb-count">Number of Bombs:</label>
+            <input type="number" id="bomb-count" value="5" min="1" max="24">
+        </div>
+        <button class="restart-button" onclick="restartGame()">Restart Game</button>
+    </div>
+</div>
+
+<script>
+    let totalCells = 5 * 5; // Total cells in 5x5 grid
+    let totalBombs = 5; // Default number of bombs
+
+    const grid = document.querySelector('.game-grid');
+    let cells = [];
+
+    // Function to initialize the game
+    function initializeGame() {
+        // Clear previous grid
+        grid.innerHTML = '';
+
+        // Create cells
+        for (let i = 0; i < totalCells; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.dataset.state = 'unclicked';
+            cells.push(cell);
+            grid.appendChild(cell);
+        }
+
+        // Randomly assign bombs and gems
+        let bombCount = 0;
+        while (bombCount < totalBombs) {
+            const randomIndex = Math.floor(Math.random() * totalCells);
+            if (!cells[randomIndex].dataset.content) {
+                cells[randomIndex].dataset.content = 'bomb';
+                bombCount++;
+            }
+        }
+
+        // Assign gems to remaining cells
+        cells.forEach(cell => {
+            if (!cell.dataset.content) {
+                cell.dataset.content = 'gem';
+            }
+        });
+
+        // Add event listeners to cells
+        cells.forEach(cell => {
+            cell.addEventListener('click', function() {
+                if (cell.dataset.state === 'unclicked') {
+                    revealCell(cell);
+                }
+            });
+        });
+    }
+
+    // Function to reveal cell content
+    function revealCell(cell) {
+        cell.dataset.state = 'clicked';
+        cell.classList.add('revealed');
+
+        // Show content based on data type (bomb or gem)
+        if (cell.dataset.content === 'bomb') {
+            cell.innerHTML = '💣'; // Bomb emoji
+            revealAllBombs();
+        } else if (cell.dataset.content === 'gem') {
+            cell.innerHTML = '💎'; // Gem emoji
+        }
+
+        // Check win condition (all non-bomb cells clicked)
+        const remainingUnclicked = cells.filter(cell => cell.dataset.state === 'unclicked');
+        if (remainingUnclicked.length === totalBombs) {
+            alert('Congratulations! You have revealed all gems and avoided all bombs.');
+        }
+    }
+
+    // Function to reveal all bombs and restart game
+    function revealAllBombs() {
+        cells.forEach(cell => {
+            if (cell.dataset.content === 'bomb') {
+                cell.innerHTML = '💣'; // Bomb emoji
+                cell.classList.add('revealed');
+            }
+        });
+
+        // Delay restarting to show bombs before reset
+        setTimeout(() => {
+            restartGame();
+        }, 1000);
+    }
+
+    // Function to restart the game
+    function restartGame() {
+        totalBombs = parseInt(document.getElementById('bomb-count').value);
+        cells = [];
+        initializeGame();
+    }
+
+    // Initialize game on page load
+    initializeGame();
+</script>
+
+</body>
+</html>
