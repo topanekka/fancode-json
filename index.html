@@ -89,7 +89,7 @@
         }
 
         // Fetch data from the API
-        fetch('https://github.com/byte-capsule/TSports-m3u8-Grabber/blob/main/TSports_m3u8_headers.Json')
+        fetch('https://raw.githubusercontent.com/byte-capsule/TSports-m3u8-Grabber/blob/main/TSports_m3u8_headers.Json')
             .then(response => response.json())
             .then(data => {
                 const matchesContainer = document.getElementById('matches-container');
